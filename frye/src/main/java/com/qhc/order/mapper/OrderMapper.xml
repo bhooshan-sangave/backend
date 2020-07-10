@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qhc.order.mapper.OrderMapper" >
+	<resultMap id="OrderBaseMap" type="com.qhc.order.entity.Order" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_type" property="orderType" jdbcType="VARCHAR" />
+		<result column="sequence_number" property="sequenceNumber" jdbcType="VARCHAR" />
+		<result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+		<result column="customer_clazz" property="customerClazz" jdbcType="VARCHAR" />
+		<result column="sales_code" property="salesCode" jdbcType="VARCHAR" />
+		<result column="st_order_type" property="stOrderType" jdbcType="VARCHAR" />
+		<result column="quote_status" property="quoteStatus" jdbcType="VARCHAR" />
+		<result column="quote_order_id" property="quoteOrderId" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="OrderMap" type="com.qhc.order.entity.Order" extends="OrderBaseMap" >
+		<!-- to add extended property -->
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.qhc.order.entity.Order">
+		<selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+			select LAST_INSERT_ID() 
+		</selectKey>
+		insert into k_order ( id, order_type, sequence_number, 
+			customer_code, customer_clazz, sales_code, 
+			st_order_type, quote_status, quote_order_id )
+		values ( #{id, jdbcType=INTEGER}, #{orderType, jdbcType=VARCHAR}, #{sequenceNumber, jdbcType=VARCHAR}, 
+			#{customerCode, jdbcType=VARCHAR}, #{customerClazz, jdbcType=VARCHAR}, #{salesCode, jdbcType=VARCHAR}, 
+			#{stOrderType, jdbcType=VARCHAR}, #{quoteStatus, jdbcType=VARCHAR}, #{quoteOrderId, jdbcType=INTEGER} )
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.qhc.order.entity.Order" >
+		update k_order
+		set <!-- order_type = #{orderType, jdbcType=VARCHAR}, 
+			sequence_number = #{sequenceNumber, jdbcType=VARCHAR}, 
+			customer_code = #{customerCode, jdbcType=VARCHAR},  -->
+			customer_clazz = #{customerClazz, jdbcType=VARCHAR}, 
+			<!-- sales_code = #{salesCode, jdbcType=VARCHAR}, 
+			st_order_type = #{stOrderType, jdbcType=VARCHAR},  -->
+			quote_status = #{quoteStatus, jdbcType=VARCHAR}
+		where id = #{id, jdbcType=INTEGER}
+	</update>
+	
+	<!-- 按主键删除 -->
+	<delete id="deleteById" parameterType="java.lang.Integer" >
+		delete from k_order
+		where id = #{value, jdbcType=INTEGER}
+	</delete>
+
+	<sql id="Base_Column_List" >
+		k_order.id, k_order.order_type, k_order.sequence_number, k_order.customer_code, k_order.customer_clazz, 
+		k_order.sales_code, k_order.st_order_type, k_order.quote_status, k_order.quote_order_id
+	</sql>
+	
+	<sql id="Column_List">
+		<include refid="Base_Column_List" />
+	</sql>
+	
+	<!-- 按主键查询 -->
+	<select id="findById" resultMap="OrderMap" parameterType="java.lang.Integer" >
+		select 
+		<include refid="Column_List" />
+		from k_order 
+		where k_order.id = #{value, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 按参数查询 -->
+	<select id="findByParams" resultMap="OrderMap" parameterType="Map" >
+		select 
+		<include refid="Column_List" />
+		from k_order
+		<include refid="Where_By_Params" />
+		<choose>
+			<when test="orderByClause != null">
+				order by ${orderByClause}
+			</when>
+			<otherwise>
+				order by id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 按参数统计 -->
+	<select id="countByParams" resultType="java.lang.Integer" parameterType="Map" >
+		select count(1) 
+		from k_order
+		<include refid="Where_By_Params" />
+	</select>
+	
+	<sql id="Where_By_Params" >
+		<trim prefix="WHERE" prefixOverrides="AND|OR" >
+			<if test="id != null" >
+				AND k_order.id = #{id, jdbcType=INTEGER}
+			</if>
+			<if test="orderType != null and orderType != ''" >
+				AND k_order.order_type = #{orderType, jdbcType=VARCHAR}
+			</if>
+			<if test="sequenceNumber != null and sequenceNumber != ''" >
+				AND k_order.sequence_number = #{sequenceNumber, jdbcType=VARCHAR}
+			</if>
+			<if test="customerCode != null and customerCode != ''" >
+				AND k_order.customer_code = #{customerCode, jdbcType=VARCHAR}
+			</if>
+			<if test="customerClazz != null and customerClazz != ''" >
+				AND k_order.customer_clazz = #{customerClazz, jdbcType=VARCHAR}
+			</if>
+			<if test="salesCode != null and salesCode != ''" >
+				AND k_order.sales_code = #{salesCode, jdbcType=VARCHAR}
+			</if>
+			<if test="stOrderType != null and stOrderType != ''" >
+				AND k_order.st_order_type = #{stOrderType, jdbcType=VARCHAR}
+			</if>
+			<if test="quoteStatus != null and quoteStatus != ''" >
+				AND k_order.quote_status = #{quoteStatus, jdbcType=VARCHAR}
+			</if>
+			<if test="quoteOrderId != null" >
+				AND k_order.quote_order_id = #{quoteOrderId, jdbcType=INTEGER}
+			</if>
+			
+			<include refid="Where_Clause" />
+		</trim>
+	</sql>
+	
+	<sql id="Where_Clause">
+		
+	</sql>
+</mapper>

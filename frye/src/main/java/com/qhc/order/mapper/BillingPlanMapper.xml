@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qhc.order.mapper.BillingPlanMapper" >
+	<resultMap id="BillingPlanBaseMap" type="com.qhc.order.entity.BillingPlan" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_info_id" property="orderInfoId" jdbcType="INTEGER" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="pay_date" property="payDate" jdbcType="DATE" />
+		<result column="percentage" property="percentage" jdbcType="DECIMAL" />
+		<result column="amount" property="amount" jdbcType="DECIMAL" />
+		<result column="rmb_amount" property="rmbAmount" jdbcType="DECIMAL" />
+		<result column="reason" property="reason" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="BillingPlanMap" type="com.qhc.order.entity.BillingPlan" extends="BillingPlanBaseMap" >
+		<!-- to add extended property -->
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.qhc.order.entity.BillingPlan">
+		<selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+			select LAST_INSERT_ID() 
+		</selectKey>
+		insert into k_billing_plan ( id, order_info_id, code, 
+			pay_date, percentage, amount, 
+			rmb_amount, reason )
+		values ( #{id, jdbcType=INTEGER}, #{orderInfoId, jdbcType=INTEGER}, #{code, jdbcType=VARCHAR}, 
+			#{payDate, jdbcType=DATE}, #{percentage, jdbcType=DECIMAL}, #{amount, jdbcType=DECIMAL}, 
+			#{rmbAmount, jdbcType=DECIMAL}, #{reason, jdbcType=VARCHAR} )
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.qhc.order.entity.BillingPlan" >
+		update k_billing_plan
+		set order_info_id = #{orderInfoId, jdbcType=INTEGER}, 
+			code = #{code, jdbcType=VARCHAR}, 
+			pay_date = #{payDate, jdbcType=DATE}, 
+			percentage = #{percentage, jdbcType=DECIMAL}, 
+			amount = #{amount, jdbcType=DECIMAL}, 
+			rmb_amount = #{rmbAmount, jdbcType=DECIMAL}, 
+			reason = #{reason, jdbcType=VARCHAR}
+		where id = #{id, jdbcType=INTEGER}
+	</update>
+	
+	<!-- 按主键删除 -->
+	<delete id="deleteById" parameterType="java.lang.Integer" >
+		delete from k_billing_plan
+		where id = #{value, jdbcType=INTEGER}
+	</delete>
+
+	<sql id="Base_Column_List" >
+		k_billing_plan.id, k_billing_plan.order_info_id, k_billing_plan.code, k_billing_plan.pay_date, k_billing_plan.percentage, 
+		k_billing_plan.amount, k_billing_plan.rmb_amount, k_billing_plan.reason
+	</sql>
+	
+	<sql id="Column_List">
+		<include refid="Base_Column_List" />
+	</sql>
+	
+	<!-- 按主键查询 -->
+	<select id="findById" resultMap="BillingPlanMap" parameterType="java.lang.Integer" >
+		select 
+		<include refid="Column_List" />
+		from k_billing_plan 
+		where k_billing_plan.id = #{value, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 按参数查询 -->
+	<select id="findByParams" resultMap="BillingPlanMap" parameterType="Map" >
+		select 
+		<include refid="Column_List" />
+		from k_billing_plan
+		<include refid="Where_By_Params" />
+		<choose>
+			<when test="orderByClause != null">
+				order by ${orderByClause}
+			</when>
+			<otherwise>
+				order by id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 按参数统计 -->
+	<select id="countByParams" resultType="java.lang.Integer" parameterType="Map" >
+		select count(1) 
+		from k_billing_plan
+		<include refid="Where_By_Params" />
+	</select>
+	
+	<sql id="Where_By_Params" >
+		<trim prefix="WHERE" prefixOverrides="AND|OR" >
+			<if test="id != null" >
+				AND k_billing_plan.id = #{id, jdbcType=INTEGER}
+			</if>
+			<if test="orderInfoId != null" >
+				AND k_billing_plan.order_info_id = #{orderInfoId, jdbcType=INTEGER}
+			</if>
+			<if test="code != null and code != ''" >
+				AND k_billing_plan.code = #{code, jdbcType=VARCHAR}
+			</if>
+			<if test="payDate != null" >
+				AND k_billing_plan.pay_date = #{payDate, jdbcType=DATE}
+			</if>
+			<if test="percentage != null" >
+				AND k_billing_plan.percentage = #{percentage, jdbcType=DECIMAL}
+			</if>
+			<if test="amount != null" >
+				AND k_billing_plan.amount = #{amount, jdbcType=DECIMAL}
+			</if>
+			<if test="rmbAmount != null" >
+				AND k_billing_plan.rmb_amount = #{rmbAmount, jdbcType=DECIMAL}
+			</if>
+			<if test="reason != null and reason != ''" >
+				AND k_billing_plan.reason = #{reason, jdbcType=VARCHAR}
+			</if>
+			
+			<include refid="Where_Clause" />
+		</trim>
+	</sql>
+	
+	<sql id="Where_Clause">
+		
+	</sql>
+	
+	<select id="findByOrderInfoId" resultMap="BillingPlanMap" parameterType="Integer" >
+		select 
+		<include refid="Column_List" />
+		from k_billing_plan
+		where order_info_id = #{value}
+	</select>
+	
+	<!-- 按主键删除 -->
+	<delete id="deleteByOrderInfoId" parameterType="java.lang.Integer" >
+		delete from k_billing_plan
+		where order_info_id = #{value}
+	</delete>
+</mapper>

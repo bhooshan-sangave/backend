@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qhc.order.mapper.SpecialOrderApplicationMapper" >
+	<resultMap id="SpecialOrderApplicationBaseMap" type="com.qhc.order.entity.SpecialOrderApplication" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_info_id" property="orderInfoId" jdbcType="INTEGER" />
+		<result column="applyer" property="applyer" jdbcType="VARCHAR" />
+		<result column="approver" property="approver" jdbcType="VARCHAR" />
+		<result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+		<result column="approval_time" property="approvalTime" jdbcType="TIMESTAMP" />
+		<result column="apply_status" property="applyStatus" jdbcType="INTEGER" />
+		<result column="receive_mail_time" property="receiveMailTime" jdbcType="VARCHAR" />
+		<result column="contract_time" property="contractTime" jdbcType="VARCHAR" />
+		<result column="pay_advance_payment_time" property="payAdvancePaymentTime" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="enclosure_path" property="enclosurePath" jdbcType="VARCHAR" />
+		<result column="enclosure_name" property="enclosureName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="SpecialOrderApplicationMap" type="com.qhc.order.entity.SpecialOrderApplication" extends="SpecialOrderApplicationBaseMap" >
+		<!-- to add extended property -->
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.qhc.order.entity.SpecialOrderApplication">
+		<selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+			select LAST_INSERT_ID() 
+		</selectKey>
+		insert into k_special_order_application ( id, order_info_id, applyer, 
+			approver, apply_time, approval_time, 
+			apply_status, receive_mail_time, contract_time, 
+			pay_advance_payment_time, remark, enclosure_path, 
+			enclosure_name )
+		values ( #{id, jdbcType=INTEGER}, #{orderInfoId, jdbcType=INTEGER}, #{applyer, jdbcType=VARCHAR}, 
+			#{approver, jdbcType=VARCHAR}, now(), #{approvalTime, jdbcType=TIMESTAMP}, 
+			#{applyStatus, jdbcType=INTEGER}, #{receiveMailTime, jdbcType=VARCHAR}, #{contractTime, jdbcType=VARCHAR}, 
+			#{payAdvancePaymentTime, jdbcType=VARCHAR}, #{remark, jdbcType=VARCHAR}, #{enclosurePath, jdbcType=VARCHAR}, 
+			#{enclosureName, jdbcType=VARCHAR} )
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.qhc.order.entity.SpecialOrderApplication" >
+		update k_special_order_application
+		set order_info_id = #{orderInfoId, jdbcType=INTEGER}, 
+			applyer = #{applyer, jdbcType=VARCHAR}, 
+			approver = #{approver, jdbcType=VARCHAR}, 
+			<!-- apply_time = now(),  -->
+			approval_time = #{approvalTime, jdbcType=TIMESTAMP}, 
+			apply_status = #{applyStatus, jdbcType=INTEGER}, 
+			receive_mail_time = #{receiveMailTime, jdbcType=VARCHAR}, 
+			contract_time = #{contractTime, jdbcType=VARCHAR}, 
+			pay_advance_payment_time = #{payAdvancePaymentTime, jdbcType=VARCHAR}, 
+			remark = #{remark, jdbcType=VARCHAR}, 
+			enclosure_path = #{enclosurePath, jdbcType=VARCHAR}, 
+			enclosure_name = #{enclosureName, jdbcType=VARCHAR}
+		where id = #{id, jdbcType=INTEGER}
+	</update>
+	
+	<!-- 按主键删除 -->
+	<delete id="deleteById" parameterType="java.lang.Integer" >
+		delete from k_special_order_application
+		where id = #{value, jdbcType=INTEGER}
+	</delete>
+
+	<sql id="Base_Column_List" >
+		k_special_order_application.id, k_special_order_application.order_info_id, k_special_order_application.applyer, k_special_order_application.approver, k_special_order_application.apply_time, 
+		k_special_order_application.approval_time, k_special_order_application.apply_status, k_special_order_application.receive_mail_time, k_special_order_application.contract_time, k_special_order_application.pay_advance_payment_time, 
+		k_special_order_application.remark, k_special_order_application.enclosure_path, k_special_order_application.enclosure_name
+	</sql>
+	
+	<sql id="Column_List">
+		<include refid="Base_Column_List" />
+	</sql>
+	
+	<!-- 按主键查询 -->
+	<select id="findById" resultMap="SpecialOrderApplicationMap" parameterType="java.lang.Integer" >
+		select 
+		<include refid="Column_List" />
+		from k_special_order_application 
+		where k_special_order_application.id = #{value, jdbcType=INTEGER}
+	</select>
+	
+	<sql id="Where_By_Params" >
+		<trim prefix="WHERE" prefixOverrides="AND|OR" >
+			oi.status in ('05', '06') AND o.st_order_type in ('1', '2', '4')
+			<if test="list != null and list != ''" >
+				<!-- 查询列表数据 -->
+				AND (soa.apply_status is null or soa.apply_status in (0, 1, 3))
+			</if>
+			<if test="sequenceNumber != null and sequenceNumber != ''" >
+				AND o.sequence_number like '%${sequenceNumber, jdbcType=INTEGER}%'
+			</if>
+			<if test="orderStartCreateTime != null and orderStartCreateTime != ''" >
+			<![CDATA[
+				AND DATE_FORMAT(oi.create_time, '%Y-%m-%d') >= #{orderStartCreateTime, jdbcType=VARCHAR}
+			]]>
+			</if>
+			<if test="orderEndCreateTime != null and orderEndCreateTime != ''" >
+			<![CDATA[
+				AND DATE_FORMAT(oi.create_time, '%Y-%m-%d') <= #{orderEndCreateTime, jdbcType=VARCHAR}
+			]]>
+			</if>
+			<if test="orderStatus != null and orderStatus != ''" >
+				AND oi.status = #{orderStatus, jdbcType=VARCHAR}
+			</if>
+			<if test="id != null" >
+				AND soa.id = #{id, jdbcType=INTEGER}
+			</if>
+			<if test="orderInfoId != null" >
+				AND soa.order_info_id = #{orderInfoId, jdbcType=INTEGER}
+			</if>
+			<if test="applyer != null and applyer != ''" >
+				AND soa.applyer = #{applyer, jdbcType=VARCHAR}
+			</if>
+			<if test="approver != null and approver != ''" >
+				AND soa.approver = #{approver, jdbcType=VARCHAR}
+			</if>
+			<if test="applyTime != null" >
+				AND soa.apply_time = #{applyTime, jdbcType=TIMESTAMP}
+			</if>
+			<if test="applyStatus != null" >
+				AND soa.apply_status = #{applyStatus, jdbcType=INTEGER}
+			</if>
+			<if test="approvalTime != null" >
+				AND soa.approval_time = #{approvalTime, jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</sql>
+	
+	<!-- 按参数统计 -->
+	<select id="countByParams" resultType="java.lang.Integer" parameterType="Map" >
+		select count(1) 
+        from k_order_info oi 
+        LEFT JOIN k_order o ON o.id = oi.order_id
+        LEFT JOIN sap_customer c on c.code = o.customer_code
+        LEFT JOIN k_special_order_application soa ON soa.order_info_id = oi.id
+		<include refid="Where_By_Params" />
+	</select>
+	
+	<!-- 按参数查询 -->
+	<select id="findByParams" resultType="com.qhc.order.domain.SpecialDeliveryDto" parameterType="Map" >
+		select 
+			soa.id, 
+			<!-- soa.order_info_id,  -->
+			soa.applyer, 
+			soa.approver, 
+			soa.apply_time, 
+			soa.approval_time, 
+			soa.apply_status, 
+			soa.receive_mail_time, 
+			soa.contract_time, 
+			soa.pay_advance_payment_time, 
+			soa.remark, 
+			soa.enclosure_path, 
+			soa.enclosure_name,
+			oi.id as order_info_id,
+	        oi.contract_number,
+	        o.sequence_number,
+	        o.customer_code,
+	        c.name as customer_name,
+	        o.customer_clazz,
+	        oi.discount,
+	        oi.create_time,
+	        oi.status
+        from k_order_info oi 
+        LEFT JOIN k_order o ON o.id = oi.order_id
+        LEFT JOIN sap_customer c on c.code = o.customer_code
+        LEFT JOIN k_special_order_application soa ON soa.order_info_id = oi.id
+		<include refid="Where_By_Params" />
+		<choose>
+			<when test="orderByClause != null">
+				order by ${orderByClause}
+			</when>
+			<otherwise>
+				order by id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 查询订单正在处理的特批发货申请 -->
+	<select id="findByOrderInfo" resultMap="SpecialOrderApplicationMap" parameterType="java.lang.Integer" >
+		select 
+		<include refid="Column_List" />
+		from k_special_order_application 
+		where k_special_order_application.order_info_id = #{orderInfoId, jdbcType=INTEGER} and apply_status in (0, 1, 3)
+	</select>
+</mapper>

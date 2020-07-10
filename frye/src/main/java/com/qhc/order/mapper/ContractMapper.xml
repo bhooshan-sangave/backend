@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qhc.order.mapper.ContractMapper" >
+	<resultMap id="ContractBaseMap" type="com.qhc.order.entity.Contract" >
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_info_id" property="orderInfoId" jdbcType="INTEGER" />
+		<result column="delivery_days" property="deliveryDays" jdbcType="INTEGER" />
+		<result column="client_name" property="clientName" jdbcType="VARCHAR" />
+		<result column="install_location" property="installLocation" jdbcType="VARCHAR" />
+		<result column="acceptance_criteria_code" property="acceptanceCriteriaCode" jdbcType="VARCHAR" />
+		<result column="customer_email" property="customerEmail" jdbcType="VARCHAR" />
+		<result column="invoice_address" property="invoiceAddress" jdbcType="VARCHAR" />
+		<result column="invoice_post_code" property="invoicePostCode" jdbcType="VARCHAR" />
+		<result column="invoice_receiver" property="invoiceReceiver" jdbcType="VARCHAR" />
+		<result column="invoice_tel" property="invoiceTel" jdbcType="VARCHAR" />
+		<result column="broker" property="broker" jdbcType="VARCHAR" />
+		<result column="company_tel" property="companyTel" jdbcType="VARCHAR" />
+		<result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+		<result column="account_number" property="accountNumber" jdbcType="VARCHAR" />
+		<result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+		<result column="company_post_code" property="companyPostCode" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="creater" property="creater" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="sender" property="sender" jdbcType="VARCHAR" />
+		<result column="send_time" property="sendTime" jdbcType="TIMESTAMP" />
+		<result column="signer" property="signer" jdbcType="VARCHAR" />
+		<result column="sign_time" property="signTime" jdbcType="TIMESTAMP" />
+		<result column="file_hashcode" property="fileHashcode" jdbcType="VARCHAR" />
+		<result column="sign_contractid" property="signContractid" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="ContractMap" type="com.qhc.order.entity.Contract" extends="ContractBaseMap" >
+		<!-- to add extended property -->
+	</resultMap>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.qhc.order.entity.Contract">
+		<selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+			select LAST_INSERT_ID() 
+		</selectKey>
+		insert into k_contract ( id, order_info_id, delivery_days, 
+			client_name, install_location, acceptance_criteria_code, 
+			customer_email, invoice_address, invoice_post_code, 
+			invoice_receiver, invoice_tel, broker, 
+			company_tel, bank_name, account_number, 
+			company_address, company_post_code, status, 
+			creater, create_time, sender, 
+			send_time, signer, sign_time, 
+			file_hashcode, sign_contractid )
+		values ( #{id, jdbcType=INTEGER}, #{orderInfoId, jdbcType=INTEGER}, #{deliveryDays, jdbcType=INTEGER}, 
+			#{clientName, jdbcType=VARCHAR}, #{installLocation, jdbcType=VARCHAR}, #{acceptanceCriteriaCode, jdbcType=VARCHAR}, 
+			#{customerEmail, jdbcType=VARCHAR}, #{invoiceAddress, jdbcType=VARCHAR}, #{invoicePostCode, jdbcType=VARCHAR}, 
+			#{invoiceReceiver, jdbcType=VARCHAR}, #{invoiceTel, jdbcType=VARCHAR}, #{broker, jdbcType=VARCHAR}, 
+			#{companyTel, jdbcType=VARCHAR}, #{bankName, jdbcType=VARCHAR}, #{accountNumber, jdbcType=VARCHAR}, 
+			#{companyAddress, jdbcType=VARCHAR}, #{companyPostCode, jdbcType=VARCHAR}, #{status, jdbcType=INTEGER}, 
+			#{creater, jdbcType=VARCHAR}, now(), #{sender, jdbcType=VARCHAR}, 
+			#{sendTime, jdbcType=TIMESTAMP}, #{signer, jdbcType=VARCHAR}, #{signTime, jdbcType=TIMESTAMP}, 
+			#{fileHashcode, jdbcType=VARCHAR}, #{signContractid, jdbcType=VARCHAR} )
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.qhc.order.entity.Contract" >
+		update k_contract
+		set <!-- order_info_id = #{orderInfoId, jdbcType=INTEGER},  -->
+			delivery_days = #{deliveryDays, jdbcType=INTEGER}, 
+			client_name = #{clientName, jdbcType=VARCHAR}, 
+			install_location = #{installLocation, jdbcType=VARCHAR}, 
+			acceptance_criteria_code = #{acceptanceCriteriaCode, jdbcType=VARCHAR}, 
+			customer_email = #{customerEmail, jdbcType=VARCHAR}, 
+			invoice_address = #{invoiceAddress, jdbcType=VARCHAR}, 
+			invoice_post_code = #{invoicePostCode, jdbcType=VARCHAR}, 
+			invoice_receiver = #{invoiceReceiver, jdbcType=VARCHAR}, 
+			invoice_tel = #{invoiceTel, jdbcType=VARCHAR}, 
+			broker = #{broker, jdbcType=VARCHAR}, 
+			company_tel = #{companyTel, jdbcType=VARCHAR}, 
+			bank_name = #{bankName, jdbcType=VARCHAR}, 
+			account_number = #{accountNumber, jdbcType=VARCHAR}, 
+			company_address = #{companyAddress, jdbcType=VARCHAR}, 
+			company_post_code = #{companyPostCode, jdbcType=VARCHAR}<!-- , 
+			status = #{status, jdbcType=INTEGER}, 
+			creater = #{creater, jdbcType=VARCHAR}, 
+			create_time = #{createTime, jdbcType=TIMESTAMP},
+			sender = #{sender, jdbcType=VARCHAR}, 
+			send_time = #{sendTime, jdbcType=TIMESTAMP}, 
+			signer = #{signer, jdbcType=VARCHAR}, 
+			sign_time = #{signTime, jdbcType=TIMESTAMP}, 
+			file_hashcode = #{fileHashcode, jdbcType=VARCHAR}, 
+			sign_contractid = #{signContractid, jdbcType=VARCHAR}  -->
+		where id = #{id, jdbcType=INTEGER}
+	</update>
+	
+	<!-- 按主键删除 -->
+	<delete id="deleteById" parameterType="java.lang.Integer" >
+		delete from k_contract
+		where id = #{value, jdbcType=INTEGER}
+	</delete>
+
+	<sql id="Base_Column_List" >
+		k_contract.id, k_contract.order_info_id, k_contract.delivery_days, k_contract.client_name, k_contract.install_location, 
+		k_contract.acceptance_criteria_code, k_contract.customer_email, k_contract.invoice_address, k_contract.invoice_post_code, k_contract.invoice_receiver, 
+		k_contract.invoice_tel, k_contract.broker, k_contract.company_tel, k_contract.bank_name, k_contract.account_number, 
+		k_contract.company_address, k_contract.company_post_code, k_contract.status, k_contract.creater, k_contract.create_time, 
+		k_contract.sender, k_contract.send_time, k_contract.signer, k_contract.sign_time, k_contract.file_hashcode, 
+		k_contract.sign_contractid
+	</sql>
+	
+	<sql id="Column_List">
+		<include refid="Base_Column_List" />
+	</sql>
+	
+	<!-- 按主键查询 -->
+	<select id="findById" resultMap="ContractMap" parameterType="java.lang.Integer" >
+		select 
+		<include refid="Column_List" />
+		from k_contract 
+		where k_contract.id = #{value, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 按参数统计 -->
+	<select id="countByParams" resultType="java.lang.Integer" parameterType="Map" >
+		select count(1) 
+		from k_contract c
+		left join k_order_info oi on oi.id = c.order_info_id
+		left join k_order o on o.id = oi.order_id
+		left join sap_customer sc on sc.code = o.customer_code
+	</select>
+	
+	<!-- 按参数查询 -->
+	<select id="findByParams" resultType="com.qhc.order.domain.ContractDto" parameterType="Map" >
+		select 
+			c.id, 
+			<!-- c.order_info_id,  -->
+			c.delivery_days, 
+			c.client_name, 
+			c.install_location, 
+			c.acceptance_criteria_code, 
+			c.customer_email, 
+			c.invoice_address, 
+			c.invoice_post_code, 
+			c.invoice_receiver, 
+			c.invoice_tel, 
+			c.broker, 
+			c.company_tel, 
+			c.bank_name, 
+			c.account_number, 
+			c.company_address, 
+			c.company_post_code, 
+			c.status, 
+			c.creater, 
+			c.create_time, 
+			c.sender, 
+			c.send_time, 
+			c.signer, 
+			c.sign_time, 
+			c.file_hashcode, 
+			c.sign_contractid,
+			oi.version,
+			o.sequence_number,
+			oi.contract_number,
+			oi.contract_manager,
+			o.customer_code,
+			sc.name as customer_name,
+			oi.id as order_info_id,
+			oi.contract_rmb_value,
+			oi.payment_type,
+			oi.receive_type,
+			oi.contactor1_id,
+			oi.contactor1_tel,
+			oi.contactor2_id,
+			oi.contactor2_tel,
+			oi.contactor3_id,
+			oi.contactor3_tel,
+			o.customer_clazz,
+			oi.install_type,
+			oi.create_time as order_create_time
+		from k_order_info oi
+		left join k_order o on o.id = oi.order_id
+		left join k_contract c on oi.id = c.order_info_id
+		left join sap_customer sc on sc.code = o.customer_code
+		<include refid="Where_By_Params" />
+		<choose>
+			<when test="orderByClause != null">
+				order by ${orderByClause}
+			</when>
+			<otherwise>
+				order by oi.create_time desc
+			</otherwise>
+		</choose>
+	</select>
+	
+	<sql id="Where_By_Params">
+		<trim prefix="WHERE" prefixOverrides="AND|OR" >
+			AND (oi.status = '05' or oi.status = '06')
+			AND (o.st_order_type = '1' or o.st_order_type = '2') 
+			<if test="id != null" >
+				AND c.id = #{id, jdbcType=INTEGER}
+			</if>
+			<if test="orderInfoId != null" >
+				AND c.order_info_id = #{orderInfoId, jdbcType=INTEGER}
+			</if>
+			<if test="status != null and status != ''" >
+				<choose>
+					<when test="status == '00'">
+						AND c.status is null
+					</when>
+					<otherwise>
+						AND c.status = #{status, jdbcType=INTEGER}
+					</otherwise>
+				</choose>
+			</if>
+			<if test="statusList != null and statusList.size() > 0" >
+				AND c.status in <foreach item="item" index="index" collection="statusList" open="("
+				            separator="," close=")">#{item, jdbcType=INTEGER}</foreach>
+			</if>
+			<if test="sequenceNumber != null and sequenceNumber != ''" >
+				AND UPPER(o.sequence_number) like '%${sequenceNumber.toUpperCase()}%'
+			</if>
+			<if test="contractNumber != null and contractNumber != ''" >
+				AND UPPER(oi.contract_number) like '%${contractNumber.toUpperCase()}%'
+			</if>
+			<if test="customerName != null and customerName != ''" >
+				AND UPPER(sc.name) like '%{contractorName.toUpperCase()}%'
+			</if>
+			<if test="customerCode != null and customerCode != ''" >
+				AND o.customer_code = #{customerCode, jdbcType=VARCHAR}
+			</if>
+			<!-- 2019-04-07 - 2019-11-07 -->
+			<if test="orderCreateTime != null and orderCreateTime != ''" >
+			<![CDATA[
+				AND DATE_FORMAT(oi.create_time, '%Y-%m-%d') >= '${orderCreateTime.substring(0, orderCreateTime.indexOf(" - "))}' and DATE_FORMAT(oi.create_time, '%Y-%m-%d') <= '${orderCreateTime.substring(orderCreateTime.indexOf(" - ") + 3)}'
+			]]>
+			</if>
+			<!-- 2019-04-07 - 2019-11-07 -->
+			<if test="createTime != null and createTime != ''" >
+			<![CDATA[
+				AND DATE_FORMAT(c.create_time, '%Y-%m-%d') >= '${createTime.substring(0, createTime.indexOf(" - "))}' and DATE_FORMAT(c.create_time, '%Y-%m-%d') <= '${createTime.substring(createTime.indexOf(" - ") + 3)}'
+			]]>
+			</if>
+		</trim>
+	</sql>
+	
+	<!-- 修改 -->
+	<update id="updateStatus" parameterType="com.qhc.order.entity.Contract" >
+		update k_contract
+		set status = #{status, jdbcType=INTEGER}, 
+		<trim suffixOverrides="," >
+			<if test="sender != null and sender != ''" >
+				sender = #{sender, jdbcType=VARCHAR}, 
+				send_time = now(), 
+			</if>
+			<if test="signer != null and signer != ''" >
+				signer = #{signer, jdbcType=VARCHAR}, 
+				sign_time = now(), 
+			</if>
+			<if test="fileHashcode != null and fileHashcode != ''" >
+				file_hashcode = #{fileHashcode, jdbcType=VARCHAR}, 
+			</if>
+			<if test="signContractid != null and signContractid != ''" >
+				sign_contractid = #{signContractid, jdbcType=VARCHAR},
+			</if>
+		</trim>
+		where id = #{id, jdbcType=INTEGER}
+	</update>
+	
+</mapper>

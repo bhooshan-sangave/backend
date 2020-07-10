@@ -1,0 +1,40 @@
+spring:
+   profiles:
+      active: dev
+   devtools: 
+      restart: 
+         enabled: true
+# Database
+   jpa: 
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      hibernate: 
+         ddl-auto: validate
+         naming: 
+            physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      show-sql: true
+   jackson: 
+      date-format: yyyy-MM-dd HH:mm:ss
+      defaultPropertyInclusion: NON_EMPTY
+      time-zone: GMT+8
+      serialization: 
+         fail-on-empty-beans: false
+
+server: 
+   servlet: 
+      context-path: /frye
+
+# logging config
+logging: 
+   config: classpath:logback-spring.xml
+   path: .\logs
+
+mybatis: 
+   configuration:
+      map-underscore-to-camel-case: true
+   mapper-locations: classpath:com/qhc/**/mapper/*.xml
+
+pagehelper: 
+   helperDialect: mysql
+   reasonable: true
+   supportMethodsArguments: true
+   params: count=countSql
